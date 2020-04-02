@@ -4,7 +4,7 @@ import router from "router/index.js"
 export function Request(config) {
   // 1.创建axios的实例
   const instance = axios.create({
-    baseURL: "http://127.0.0.1:5000",
+    baseURL: "http://120.55.45.233:5000",
     timeout: 5000
   });
   //   axios的拦截器
