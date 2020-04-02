@@ -14,26 +14,23 @@ module.exports = {
       }
     },
     externals: {
-      // 'vue': 'Vue',
-      // 'vuex': 'Vuex',
-      // 'vue-router': 'VueRouter',
-      // 'axios': 'axios',
-      // 'element-ui': 'ElEMENT'
+      vue: "Vue",
+      vuex: "Vuex",
+      "vue-router": "VueRouter",
+      axios: "axios",
+      "element-ui": "ElEMENT",
+      "v-charts": "VeIndex"
       // "v-charts": "VeIndex"
     }
-  },
+  }
 
-  chainWebpack: config => {
-      // .plugin('webpack-bundle-analyzer')
-      // .use(require('webpack-bundle-analyzer').BundleAnalyzerPlugin)
-// 
-    // 压缩代码
-    // config.optimization.minimize(true)
-  },
+  // chainWebpack: config => {
+  // .plugin('webpack-bundle-analyzer')
+  // .use(require('webpack-bundle-analyzer').BundleAnalyzerPlugin)
+  //
+  // 压缩代码
+  // config.optimization.minimize(true)
+  // },
 
   // lintOnSave: false
 };
-
-
-
-
