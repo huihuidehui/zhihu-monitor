@@ -1,7 +1,7 @@
 FROM python:3.7
 RUN mkdir /code
 WORKDIR /code
-COPY requirments.txt .
+COPY requirements.txt .
 RUN pip install -r requirements.txt -i https://pypi.douban.com/simple
 EXPOSE 5000
 
