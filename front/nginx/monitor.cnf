@@ -1,0 +1,12 @@
+
+server {
+    listen       80;
+    server_name  www.zhihumonitor.huihuidehui.com;
+    # 接口代理
+    
+    # vue `history` 模式配置
+    location / {
+        root /var/www/html;
+  		try_files $uri $uri/ /index.html;
+	}
+}

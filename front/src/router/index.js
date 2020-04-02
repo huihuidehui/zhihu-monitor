@@ -8,13 +8,13 @@ const QuestionView = () => import("../views/question/QuestionView");
 const AnswerView = () => import("../views/answer/AnswerView");
 Vue.use(VueRouter);
 let routes = [
-  {
-    path: "/",
-    redirect: "/home"
-  },
+  // {
+    // path: "/",
+    // redirect: "/home"
+  // },
   {
     // name: '404',
-    path: "/home",
+    path: "/",
     component: Home
   },
   {

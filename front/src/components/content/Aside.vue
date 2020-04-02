@@ -9,7 +9,7 @@
       :collapse="isExpansion"
       router
     >
-      <el-menu-item index="/admin/index" :route="{path:'/home'}">
+      <el-menu-item index="/admin/index" :route="{path:'/'}">
         <i class="el-icon-location"></i>
         <span>首页</span>
       </el-menu-item>
