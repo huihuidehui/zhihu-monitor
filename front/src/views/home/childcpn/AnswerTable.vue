@@ -3,17 +3,23 @@
   <div>
     <div>
       <p class="is-size-6">添加监控的回答</p>
-      <el-input v-model="questionId" placeholder="输入回答所在问题id"></el-input>
-      <el-input v-model="answerName" placeholder="输入作者的知乎昵称"></el-input>
+      <el-input v-model="questionZhiHuId" placeholder="输入回答所在问题id"></el-input>
+      <el-input v-model="answerZhiHuId" placeholder="输入回答id"></el-input>
       <el-button type="primary" size="mini" round v-on:click="addNewAnswer">提交</el-button>
     </div>
     <div class="question-table">
       <p class="title is-size-5">监控回答</p>
       <el-table v-loading="loading" :border="true" :data="answersData" style="width: 100%">
         <el-table-column type="index" :index="indexMethod"></el-table-column>
-        <el-table-column prop="title" label="标题"></el-table-column>
-        <el-table-column prop="questionId" label="问题id"></el-table-column>
+        <el-table-column prop="title" label="答主"></el-table-column>
+        <!-- <el-table-column prop="questionId" label="问题id"></el-table-column> -->
         <el-table-column prop="question" label="问题"></el-table-column>
+        <el-table-column prop="questionZhiHuId" label="问题Id"></el-table-column>
+
+        <el-table-column prop="rank" label="排名"></el-table-column>
+        <el-table-column prop="voteNums" label="点赞数"></el-table-column>
+        <el-table-column prop="commentNums" label="评论数"></el-table-column>
+        <el-table-column prop="answerZhiHuId" label="回答Id"></el-table-column>
 
         <el-table-column label="操作" width="100">
           <template slot-scope="scope">
@@ -45,8 +51,8 @@ export default {
   name: "AnswerTable",
   data() {
     return {
-      questionId: "",
-      answerName: "",
+      questionZhiHuId: "",
+      answerZhiHuId: "",
       answersData: [],
       page: 1,
       currentPage: 1,
@@ -71,29 +77,26 @@ export default {
         url: "/answer",
         method: "put",
         data: {
-          questionId: this.questionId,
-          answerName: this.answerName
+          questionZhiHuId: this.questionZhiHuId,
+          answerZhiHuId: this.answerZhiHuId
         }
       })
         .then(res => {
           if (res.res == 1) {
-            // this.$router.pu、sh({
-            // path:"/home"
-            // })
             this.getData();
-            this.questionId = "";
-            this.answerName = "";
+            this.questionZhiHuId = "";
+            this.answerZhiHuId = "";
             this.$message({
               message: "恭喜你，提交成功",
               type: "success"
             });
           } else {
-            this.$message.error("提交失败，请核对作者昵称、问题id");
+            this.$message.error("提交失败，请核对回答id、问题id");
           }
         })
         .catch(err => {
           console.log(err);
-          this.$message.error("提交失败，请核对作者昵称、问题id");
+          this.$message.error("提交失败，请核对回答id、问题id");
         });
       //   console.log("tijai");
     },
@@ -101,8 +104,8 @@ export default {
       this.$router.push({
         path: "showanswer",
         query: {
-          questionId: data.questionId,
-          answerName: data.title
+          questionZhiHuId: data.questionZhiHuId,
+          answerZhiHuId: data.answerZhiHuId
         }
       });
       // console.log(data.questionId);
@@ -112,8 +115,8 @@ export default {
         url: "/answer",
         method: "delete",
         data: {
-          questionId: data.questionId,
-          answerName: data.title
+          questionZhiId: data.questionZhiHuId,
+          answerZhiHuId: data.answerZhiHuId
         }
       }).then(res => {
         if (res.res == 1) {
@@ -123,10 +126,10 @@ export default {
           });
           this.getData();
         } else {
-          this.$message.error("提交失败，请核对作者昵称、问题id");
+          this.$message.error("提交失败，请核对回答id、问题id");
         }
       }).catch(err=>{
-          this.$message.error("提交失败，请核对作者昵称、问题id");
+          this.$message.error("提交失败，请核对回答id、问题id");
       })
     },
     indexMethod(index) {

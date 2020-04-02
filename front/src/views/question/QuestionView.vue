@@ -118,12 +118,12 @@ export default {
         url: "/question",
         method: "get",
         params: {
-          id: this.$route.query.questionId,
+          questionZhiHuId: this.$route.query.questionZhiHuId,
           startTime: this.startTime,
           endTime: this.endTime
         }
       }).then(res => {
-        this.title = res.data.title;
+        this.title = res.data.questionTitle;
         // this.chartData.rows = res.data.followerNums;
         // 处理数据
         let newRows = new Array();

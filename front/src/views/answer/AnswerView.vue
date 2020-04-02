@@ -110,8 +110,8 @@ export default {
         url: "/answer",
         method: "get",
         params: {
-          questionId: this.$route.query.questionId,
-          answerName: this.$route.query.answerName,
+          questionZhiHuId: this.$route.query.questionZhiHuId,
+          answerZhiHuId: this.$route.query.answerZhiHuId,
           startTime: this.startTime,
           endTime: this.endTime
         }

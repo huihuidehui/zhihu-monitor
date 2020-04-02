@@ -4,7 +4,7 @@
   <div>
     <div style="margin-top:2rem">
       <p class="is-size-6">添加监控的问题</p>
-      <el-input v-model="questionId" placeholder="输入问题id"></el-input>
+      <el-input v-model="questionZhiHuId" placeholder="输入问题id"></el-input>
       <!-- <el-input v-model="answerName" placeholder="输入作者的知乎昵称"></el-input> -->
       <el-button type="primary" size="mini" round v-on:click="addNewQuestion">提交</el-button>
     </div>
@@ -12,8 +12,10 @@
       <p class="title is-size-5">监控问题</p>
       <el-table v-loading="loading" :border="true" :data="questionsData" style="width: 100%">
         <el-table-column type="index" :index="indexMethod"></el-table-column>
-        <el-table-column prop="title" label="标题"></el-table-column>
-        <el-table-column prop="questionId" label="问题id"></el-table-column>
+        <el-table-column prop="questionTitle" label="标题"></el-table-column>
+        <el-table-column prop="questionZhiHuId" label="问题id"></el-table-column>
+        <el-table-column prop="currentFollowerNums" label="关注数"></el-table-column>
+        <el-table-column prop="currentViewNums" label="浏览数"></el-table-column>
 
         <el-table-column label="操作" width="100">
           <template slot-scope="scope">
@@ -48,7 +50,7 @@ export default {
   name: "QuestionTable",
   data() {
     return {
-      questionId: "",
+      questionZhiHuId: "",
       questionsData: [],
       page: 1,
       currentPage: 1,
@@ -72,7 +74,7 @@ export default {
       this.$router.push({
         path: "showquestion",
         query: {
-          questionId: data.questionId
+          questionZhiHuId: data.questionZhiHuId
         }
       });
     },
@@ -81,7 +83,7 @@ export default {
         url: "/question",
         method: "delete",
         data: {
-          id: data.questionId,
+          questionZhiHuId: data.questionZhiHuId,
         }
       }).then(res => {
         if (res.res == 1) {
@@ -135,14 +137,14 @@ export default {
         url: "/question",
         method: "put",
         data: {
-          id: this.questionId
+          questionZhiHuId: this.questionZhiHuId
           // answerName: this.answerName
         }
       })
         .then(res => {
           if (res.res == 1) {
             this.getData();
-            this.questionId = "";
+            this.questionZhiHuId = "";
             this.$message({
               message: "恭喜你，提交成功",
               type: "success"
@@ -152,7 +154,7 @@ export default {
           }
         })
         .catch(err => {
-          console.log(err);
+          // console.log(err);
           this.$message.error("提交失败，请核对问题id");
         });
     }

@@ -2,7 +2,6 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import store from "store/index.js";
 
-// const NotFound = () => import("views/notfound/NotFound.vue");
 const Home = () => import("../views/home/Home.vue");
 const Login = () => import("../views/login/Login.vue");
 const QuestionView = () => import("../views/question/QuestionView");
