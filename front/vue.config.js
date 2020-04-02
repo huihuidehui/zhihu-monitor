@@ -13,22 +13,23 @@ module.exports = {
         router: "@/router"
       }
     },
-    // externals: {
+    externals: {
       // 'vue': 'Vue',
       // 'vuex': 'Vuex',
       // 'vue-router': 'VueRouter',
       // 'axios': 'axios',
       // 'element-ui': 'ElEMENT'
-    // }
+      // "v-charts": "VeIndex"
+    }
   },
 
-  // chainWebpack: config => {
+  chainWebpack: config => {
       // .plugin('webpack-bundle-analyzer')
       // .use(require('webpack-bundle-analyzer').BundleAnalyzerPlugin)
 // 
     // 压缩代码
     // config.optimization.minimize(true)
-  // },
+  },
 
   // lintOnSave: false
 };
