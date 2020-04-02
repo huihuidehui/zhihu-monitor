@@ -54,7 +54,7 @@ def create_crawler_task(app):
     # scheduler.add_job(func=update_data, id="update_data", trigger="cron", hour=app.config['HOUR'],
     #                   minute=app.config['MINUTE'])
     # 每隔6小时爬一次
-    scheduler.add_job(func=update_data, trigger='interval', id='update_date', seconds=60)
+    scheduler.add_job(func=update_data, trigger='interval', id='update_date', seconds=21600)
 
 
 # pass
