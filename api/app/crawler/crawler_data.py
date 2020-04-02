@@ -33,13 +33,13 @@ class ZhSpider(object):
         """
         pass
 
-    def get_follower_view_title(self, question_id):
+    def get_follower_view_title(self, question_zhihuid):
         """
         根据问题id返回该问题的关注数和浏览数和标题
         :param question_id: 问题id
         :return: follower_num, view_num
         """
-        url = self.question_base_url.format(question_id)
+        url = self.question_base_url.format(question_zhihuid)
         response = self.get(url)
         # 使用xpath获取关注数和浏览数
         html = etree.HTML(response.text)
@@ -59,25 +59,28 @@ class ZhSpider(object):
         time.sleep(1)
         return response
 
-    def get_answer_data(self, answer_name, question_id):
+    def get_answer_data(self, answer_zhihuid, question_zhihuid):
         """
-        根据回答者name爬去信息
-        :param answer_name:
-        :return: 赞同数，评论数,排名
+
+        :param answer_zhihuid:
+        :param question_zhihuid:
+        :return:
         """
-        answer_url = self.answer_base_url.format(question_id, 5)
+        answer_url = self.answer_base_url.format(question_zhihuid, 5)
         next_page_answer_url = answer_url
         rank = 0
         vote_num = 0
         comment_num = 0
+        title = ""
         is_found = False
         while next_page_answer_url is not None:
             response = self.get(next_page_answer_url)
             answers_dic_data = json.loads(response.content.decode('utf8'))
             for answer in answers_dic_data.get('data'):
                 rank += 1
-                if answer.get('author').get('name') == answer_name:
+                if answer.get('id') == answer_zhihuid:
                     # 记录数据
+                    title = answer.get('author').get('name')
                     vote_num = answer.get('voteup_count')
                     comment_num = answer.get('comment_count')
                     is_found = True
@@ -92,4 +95,4 @@ class ZhSpider(object):
             else:
                 # 没有找到回答
                 next_page_answer_url = None
-        return vote_num, comment_num, rank
+        return vote_num, comment_num, rank, title

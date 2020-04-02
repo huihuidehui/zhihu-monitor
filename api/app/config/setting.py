@@ -2,12 +2,12 @@
 # encoding: utf-8
 
 # 数据库链接地址
-SQLALCHEMY_DATABASE_URI = "sqlite:///./dbdir/test.db"
+# SQLALCHEMY_DATABASE_URI = "sqlite:///./dbdir/test.db"
 SQLALCHEMY_TRACK_MODIFICATIONS = True
 # mysql数据库示例
 # SQLALCHEMY_DATABASE_URI = "mysql+pymysql://usename:password@host:port/databasename?charset=encode"
 # 例如
-# SQLALCHEMY_DATABASE_URI = "mysql+pymysql://kanhui:123456@mysql01:3306/blog?charset=utf8mb4"
+SQLALCHEMY_DATABASE_URI = "mysql+pymysql://kanhui:123456@127.0.0.1:3306/monitor?charset=utf8mb4"
 # 用于表单加密
 SECRET_KEY = "123456"
 

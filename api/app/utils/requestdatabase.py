@@ -11,14 +11,14 @@ class DatabaseRequest(object):
         pass
 
     @staticmethod
-    def get_answer_by_name(answer_name, question_id):
+    def get_answer_by_zhihuid(answer_zhihuid, question_zhihuid):
         """
 
-        :param answer_name:
-        :param question_id:
+        :param answer_zhihuid:
+        :param question_zhihuid:
         :return:
         """
-        data = Answer.query.filter_by(title=answer_name).filter_by(question_id=question_id).first()
+        data = Answer.query.filter_by(answer_zhihuid=answer_zhihuid).filter_by(question_zhihuid=question_zhihuid).first()
         return (False, None) if data is None else (True, data)
 
     @staticmethod
@@ -153,11 +153,11 @@ class DatabaseRequest(object):
 
     #
     @staticmethod
-    def get_question_by_id(question_id):
+    def get_question_by_zhihuid(question_zhihuid):
         """
-        根据问题id查询问题信息
-        :param question_id
+
+        :param question_zhihuid:
         :return:
         """
-        data = Question.query.filter_by(question_id=question_id).first()
+        data = Question.query.filter_by(question_zhihuid=question_zhihuid).first()
         return (False, None) if data is None else (True, data)

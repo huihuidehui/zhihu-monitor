@@ -24,8 +24,8 @@ class BaseSettings(object):
         }
         # 过滤问题详情字段
         self.question_fields = {
-            'title': fields.String(attribute='title'),
-            'questionId': fields.Integer(attribute='question_id'),
+            'questionTitle': fields.String(attribute='title'),
+            'questionZhiHuId': fields.Integer(attribute='question_zhihuid'),
             'followerNums': fields.Nested(self.follower_nums_fields, attribute="followerNums"),
             'viewNums': fields.Nested(self.view_nums_fields, attribute="viewNums"),
             'currentFollowerNums': fields.Integer(attribute='current_follower_nums'),
@@ -48,7 +48,7 @@ class BaseSettings(object):
         # 过滤回答详情字段
         self.answer_fields = {
             'title': fields.String(attribute='title'),
-            'questionId': fields.Integer(attribute='questionId'),
+            'questionZhiHuId': fields.Integer(attribute='questionZhiHuId'),
             'question': fields.String(attribute='questionTitle'),
             'voteNum': fields.Nested(self.vote_num_fields, attribute='voteNums'),
             'rank': fields.Nested(self.rank_fields, attribute='rankNums'),
@@ -56,8 +56,12 @@ class BaseSettings(object):
         }
         self.answers_fields = {
             'title': fields.String(attribute='title'),
-            'questionId': fields.Integer(attribute='question_id'),
-            'question': fields.String(attribute='question_title')
+            'questionZhiHuId': fields.Integer(attribute='question_zhihuid'),
+            'question': fields.String(attribute='question_title'),
+            'voteNums': fields.Integer(attribute='current_vote_nums'),
+            'rank': fields.Integer(attribute='current_rank'),
+            'commentNums': fields.Integer(attribute='current_comment_nums'),
+            'answerZhiHuId': fields.Integer(attribute='answer_zhihuid')
         }
         # 所有请求的默认响应
         self.base_response_data = {

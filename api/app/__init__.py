@@ -5,7 +5,7 @@ import time
 import click
 from flask import Flask
 from flask_restful import Api
-
+from flask_migrate import Migrate
 from app.extensions import scheduler
 from app.extensions.flask_bcrypt import bcrypt
 from app.models import db, Question as QuestionModel, Answer as AnswerModel, User as UserModel
@@ -40,12 +40,25 @@ def create_app():
     # 创建爬虫任务
     create_crawler_task(app)
 
+    # 数据库迁移插件
+    create_migrate(app)
+
     return app
 
 
+def create_migrate(app):
+    migrate = Migrate(app, db)
+
+
 def create_crawler_task(app):
-    scheduler.add_job(func=update_data, id="update_data", trigger="cron", hour=app.config['HOUR'], minute=app.config['MINUTE'])
-    # pass
+    # scheduler.add_job(func=update_data, id="update_data", trigger="cron", hour=app.config['HOUR'],
+    #                   minute=app.config['MINUTE'])
+
+    scheduler.add_job(func=update_data, trigger='interval', id='update_date', seconds=1800)
+
+
+# pass
+
 
 def register_extensions(app):
     bcrypt.init_app(app)

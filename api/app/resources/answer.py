@@ -53,24 +53,27 @@ class AnswerList(BaseResource):
 class Answer(BaseResource):
     def __init__(self):
         super(Answer, self).__init__()
-        self.parser.add_argument('answerName', type=str)
-        self.parser.add_argument('questionId', type=int)
+        self.parser.add_argument('answerZhiHuId', type=int)
+        self.parser.add_argument('questionZhiHuId', type=int)
         self.parser.add_argument('startTime', type=int, default=0)  # 开始时间
         self.parser.add_argument('endTime', type=int, default=get_time_stamp())
         self.fields = base_settings.answer_fields
 
     def get(self):
         response_data = deepcopy(self.base_response_data)
-        answer_name = self.parser.parse_args().get('answerName')
-        question_id = self.parser.parse_args().get('questionId')
+        answer_zhihuid = self.parser.parse_args().get('answerZhiHuId')
+        question_zhihuid = self.parser.parse_args().get('questionZhiHuId')
 
         start_time = self.parser.parse_args().get('startTime')
         end_time = self.parser.parse_args().get('endTime')
-        is_success, answer_data = self.requester.get_answer_by_name(answer_name=answer_name, question_id=question_id)
+        is_success, answer_data = self.requester.get_answer_by_zhihuid(answer_zhihuid=answer_zhihuid,
+                                                                       question_zhihuid=question_zhihuid)
         if is_success:
             new_data = {
+                # 回答者的昵称
                 'title': answer_data.title,
-                'questionId': question_id,
+                # 问题id不是数据库里的
+                'questionZhiHuId': question_zhihuid,
                 'questionTitle': answer_data.question_title,
                 'voteNums': answer_data.vote_nums.filter(VoteNumModel.record_time >= start_time,
                                                          VoteNumModel.record_time <= end_time).all(),
@@ -90,17 +93,23 @@ class Answer(BaseResource):
 
     def put(self):
         response_data = deepcopy(self.base_response_data)
-        answer_name = self.parser.parse_args().get('answerName')
-        question_id = self.parser.parse_args().get('questionId')
-        is_success, question_data = self.requester.get_question_by_id(question_id)
-        is_success = self.add_new_answer(answer_name=answer_name, question_id=question_id,
-                                         question_title=question_data.title)
+        answer_zhihuid = self.parser.parse_args().get('answerZhiHuId')
+        # 问题id
+        question_zhihuid = self.parser.parse_args().get('questionZhiHuId')
+        is_success, question_data = self.requester.get_question_by_zhihuid(question_zhihuid)
         if is_success:
+            # 数据库中的id
+            question_id = question_data.id
+            is_success = self.add_new_answer(answer_zhihuid=answer_zhihuid, question_zhihuid=question_zhihuid,
+                                             question_id=question_id,
+                                             question_title=question_data.title)
             # 回答在数据库的数据
-            _, answer_data = self.requester.get_answer_by_name(answer_name, question_id)
+            _, answer_data = self.requester.get_answer_by_zhihuid(answer_zhihuid, question_zhihuid)
+            # answer_id为数据库的id
+            answer_id = answer_data.id
             scheduler.add_job(func=add_new_answer_crawler, id="add_new_answer_crawler", trigger="date",
                               next_run_time=datetime.datetime.now() + datetime.timedelta(seconds=5),
-                              args=[question_id, answer_name, answer_data.id])
+                              args=[question_zhihuid, answer_zhihuid, answer_id])
             return response_data, 200
         else:
             response_data['res'] = 0
@@ -109,9 +118,10 @@ class Answer(BaseResource):
 
     def delete(self):
         response_data = deepcopy(self.base_response_data)
-        answer_name = self.parser.parse_args().get('answerName')
-        question_id = self.parser.parse_args().get('questionId')
-        is_success, answer_data = self.requester.get_answer_by_name(answer_name=answer_name, question_id=question_id)
+        answer_zhihuid = self.parser.parse_args().get('answerZhiHuId')
+        question_zhihuid = self.parser.parse_args().get('questionZhiHuId')
+        is_success, answer_data = self.requester.get_answer_by_zhihuid(answer_zhihuid=answer_zhihuid,
+                                                                       question_zhihuid=question_zhihuid)
         if is_success:
             self.requester.delete(answer_data)
             self.requester.commit()
@@ -120,15 +130,18 @@ class Answer(BaseResource):
             response_data['message'] = "error"
         return response_data
 
-    def add_new_answer(self, answer_name, question_id, question_title):
+    def add_new_answer(self, answer_zhihuid, question_zhihuid, question_id, question_title):
         """
-        增加新的回答
-        :param answer_name:
-        :param question_id:
-        :return: bool
+
+        :param answer_zhihuid:
+        :param question_zhihuid:
+        :param question_model_id:
+        :param question_title:
+        :return:
         """
         try:
-            new_answer = AnswerModel(title=answer_name, question_id=question_id, question_title=question_title)
+            new_answer = AnswerModel(answer_zhihuid=answer_zhihuid, question_zhihuid=question_zhihuid,
+                                     question_id=question_id, question_title=question_title)
             self.requester.add(new_answer)
             self.requester.commit()
             return True

@@ -56,7 +56,7 @@ class Question(BaseResource):
     def __init__(self):
         super(Question, self).__init__()
         # 请求添加问题的id
-        self.parser.add_argument('id', type=int)
+        self.parser.add_argument('questionZhiHuId', type=int)
         self.parser.add_argument('startTime', type=int, default=0)  # 开始时间
         self.parser.add_argument('endTime', type=int, default=get_time_stamp())  # 截至时间
         self.fields = base_settings.question_fields
@@ -64,19 +64,21 @@ class Question(BaseResource):
     def get(self):
         response_data = {'res': 1, 'data': None}
         # 根据id请求数据库中的问题详情。
-        question_id = self.parser.parse_args().get('id')
+        question_zhihuid = self.parser.parse_args().get('questionZhiHuId')
         start_time = self.parser.parse_args().get('startTime')
         end_time = self.parser.parse_args().get('endTime')
 
-        is_success, question_data = self.requester.get_question_by_id(question_id)
+        is_success, question_data = self.requester.get_question_by_zhihuid(question_zhihuid)
 
         new_data = {
-            'question_id': question_data.question_id,
+            'question_zhihuid': question_data.question_zhihuid,
             'title': question_data.title,
             'followerNums': question_data.follower_nums.filter(FollowerNum.record_time >= start_time,
                                                                FollowerNum.record_time <= end_time).all(),
             'viewNums': question_data.view_nums.filter(ViewNum.record_time >= start_time,
-                                                       ViewNum.record_time <= end_time).all()
+                                                       ViewNum.record_time <= end_time).all(),
+            'current_follower_nums':question_data.current_follower_nums,
+            'current_view_nums': question_data.current_view_nums
         }
 
         if is_success:
@@ -86,12 +88,12 @@ class Question(BaseResource):
 
     def put(self):
         response_data = deepcopy(self.base_response_data)
-        question_id = self.parser.parse_args().get("id")
+        question_zhihuid = self.parser.parse_args().get("questionZhiHuId")
         # 获取当前时间该的问题关注数和浏览数和标题
-        follower_nums, view_nums, title = self.crawler.get_follower_view_title(question_id)
+        follower_nums, view_nums, title = self.crawler.get_follower_view_title(question_zhihuid)
 
         # 根据问题id提交到数据库
-        new_question = self.build_new_question(question_id, title, follower_nums, view_nums)
+        new_question = self.build_new_question(question_zhihuid, title, follower_nums, view_nums)
         # 提交到数据库
         try:
             self.requester.add(new_question)
@@ -99,9 +101,8 @@ class Question(BaseResource):
 
             new_follower_num = FollowerNum(question_id=new_question.id, value=follower_nums,
                                            record_time=get_time_stamp())
-            self.requester.add(new_follower_num)
-            # new_question.
             new_view_num = ViewNum(question_id=new_question.id, value=view_nums, record_time=get_time_stamp())
+            self.requester.add(new_follower_num)
             self.requester.add(new_view_num)
 
             # 提交
@@ -112,12 +113,11 @@ class Question(BaseResource):
             response_data['res'] = 0
             response_data['message'] = "error"
             return response_data
-        # 根据问题id从数据库中删除某个回答
 
     def delete(self):
         response_data = deepcopy(self.base_response_data)
-        question_id = self.parser.parse_args().get('id')
-        res, data = self.requester.get_question_by_id(question_id)
+        question_zhihuid = self.parser.parse_args().get('questionZhiHuId')
+        res, data = self.requester.get_question_by_zhihuid(question_zhihuid)
         if res:
             self.requester.delete(data)
             self.requester.commit()
@@ -127,15 +127,15 @@ class Question(BaseResource):
             response_data['message'] = "error"
         return response_data, 200
 
-    def build_new_question(self, question_id, title, follower_nums, view_nums):
+    def build_new_question(self, question_zhihuid, title, follower_nums, view_nums):
         """
 
-        :param question_id:
+        :param question_zhihuid:
         :param title:
         :param follower_nums:
         :param view_nums:
         :return:
         """
-        new_question = QuestionModel(question_id=question_id, title=title, current_follower_nums=follower_nums,
+        new_question = QuestionModel(question_zhihuid=question_zhihuid, title=title, current_follower_nums=follower_nums,
                                      current_view_nums=view_nums)
         return new_question

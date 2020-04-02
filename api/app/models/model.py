@@ -13,7 +13,7 @@ from app.utils.util import get_time_stamp
 class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     # 问题id
-    question_id = db.Column(db.Integer, unique=True)
+    question_zhihuid = db.Column(db.Integer, unique=True)
     # 问题title
     title = db.Column(db.String(128))
     # 当前关注数
@@ -30,21 +30,13 @@ class Question(db.Model):
     # 总回答数
     answers_total = db.Column(db.Integer)
 
-    @property
-    def follower_nums_list(self):
-        return self.follower_nums.all()
-
-    @property
-    def view_nums_list(self):
-        return self.view_nums.all()
-
 
 class ViewNum(db.Model):
     # 多
     __tablename__ = "viewnum"
     id = db.Column(db.Integer, primary_key=True)
-    record_time = db.Column(db.Integer, default=get_time_stamp())
-    value = db.Column(db.Integer)
+    record_time = db.Column(db.BigInteger, default=get_time_stamp())
+    value = db.Column(db.BigInteger)
     question_id = db.Column(db.Integer, db.ForeignKey('question.id'))
     question = db.relationship("Question", back_populates="view_nums")
 
@@ -57,8 +49,8 @@ class FollowerNum(db.Model):
     # 多
     __tablename__ = "followernum"
     id = db.Column(db.Integer, primary_key=True)
-    record_time = db.Column(db.Integer, default=get_time_stamp())
-    value = db.Column(db.Integer)
+    record_time = db.Column(db.BigInteger, default=get_time_stamp())
+    value = db.Column(db.BigInteger)
     question_id = db.Column(db.Integer, db.ForeignKey('question.id'))
     question = db.relationship("Question", back_populates="follower_nums")
 
@@ -69,10 +61,15 @@ class FollowerNum(db.Model):
 
 class Answer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    answer_id = db.Column(db.Integer)
+    answer_zhihuid = db.Column(db.BigInteger, unique=True)
     # 回答者的用户名
     title = db.Column(db.String(128))
     question_title = db.Column(db.String(128))
+    # question_id
+    current_vote_nums = db.Column(db.Integer)
+    current_rank = db.Column(db.Integer)
+    current_comment_nums = db.Column(db.Integer)
+    question_zhihuid = db.Column(db.BigInteger)
     # 点赞数
     vote_nums = db.relationship("VoteNum", back_populates='answer', lazy="dynamic")
     # 评论数
@@ -103,8 +100,8 @@ class Answer(db.Model):
 class LikeNums(db.Model):
     __tablename__ = "likenums"
     id = db.Column(db.Integer, primary_key=True)
-    record_time = db.Column(db.Integer, default=get_time_stamp())
-    value = db.Column(db.Integer)
+    record_time = db.Column(db.BigInteger, default=get_time_stamp())
+    value = db.Column(db.BigInteger)
     answer_id = db.Column(db.Integer, db.ForeignKey("answer.id"))
     answer = db.relationship("Answer", back_populates="like_nums")
 
@@ -112,16 +109,16 @@ class LikeNums(db.Model):
 class CollectNums(db.Model):
     __tablename__ = "collectnums"
     id = db.Column(db.Integer, primary_key=True)
-    record_time = db.Column(db.Integer, default=get_time_stamp())
-    value = db.Column(db.Integer)
+    record_time = db.Column(db.BigInteger, default=get_time_stamp())
+    value = db.Column(db.BigInteger)
     answer_id = db.Column(db.Integer, db.ForeignKey("answer.id"))
     answer = db.relationship("Answer", back_populates="collect_nums")
 
 
 class Rank(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    record_time = db.Column(db.Integer, default=get_time_stamp())
-    value = db.Column(db.Integer)
+    record_time = db.Column(db.BigInteger, default=get_time_stamp())
+    value = db.Column(db.BigInteger)
     answer_id = db.Column(db.Integer, db.ForeignKey("answer.id"))
     answer = db.relationship("Answer", back_populates="ranks")
 
@@ -133,8 +130,8 @@ class Rank(db.Model):
 class CommentNum(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     __tablename__ = "commentnum"
-    record_time = db.Column(db.Integer, default=get_time_stamp())
-    value = db.Column(db.Integer)
+    record_time = db.Column(db.BigInteger, default=get_time_stamp())
+    value = db.Column(db.BigInteger)
     answer_id = db.Column(db.Integer, db.ForeignKey('answer.id'))
     answer = db.relationship("Answer", back_populates="comment_nums")
 
@@ -146,8 +143,8 @@ class CommentNum(db.Model):
 class VoteNum(db.Model):
     __tablename__ = "votenum"
     id = db.Column(db.Integer, primary_key=True)
-    record_time = db.Column(db.Integer, default=get_time_stamp())
-    value = db.Column(db.Integer)
+    record_time = db.Column(db.BigInteger, default=get_time_stamp())
+    value = db.Column(db.BigInteger)
     answer_id = db.Column(db.Integer, db.ForeignKey('answer.id'))
     answer = db.relationship("Answer", back_populates="vote_nums")
 

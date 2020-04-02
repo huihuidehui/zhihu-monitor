@@ -10,26 +10,30 @@ database_requester = DatabaseRequest()
 zh_spider = ZhSpider()
 
 
-def add_new_answer_crawler(question_id, answer_name, answer_id):
+def add_new_answer_crawler(question_zhihuid, answer_zhihuid, answer_id):
     """
 
-    :param question_id: 问题id
-    :param answer_name:
-    :param answer_id: 回答在数据库中的id
+    :param question_zhihuid:
+    :param answer_zhihuid:
+    :param answer_id:
     :return:
     """
-    vote_num, comment_num, rank = zh_spider.get_answer_data(answer_name, question_id)
-    new_vote_num = VoteNum(value=vote_num, answer_id=answer_id, record_time=get_time_stamp())
-    new_comment_num = CommentNum(value=comment_num, answer_id=answer_id, record_time=get_time_stamp())
-    new_rank = Rank(value=rank, answer_id=answer_id, record_time=get_time_stamp())
+    _, answer_data = database_requester.get_model_by_id(Answer, answer_id)
+    vote_num, comment_num, rank, title = zh_spider.get_answer_data(answer_zhihuid, question_zhihuid)
+    answer_data.title = title
+    answer_data.current_vote_nums = vote_num
+    answer_data.current_rank = rank
+    answer_data.current_comment_nums = comment_num
+    database_requester.commit()
+
+    new_vote_num = VoteNum(value=vote_num, answer_id=answer_data.id, record_time=get_time_stamp())
+    new_comment_num = CommentNum(value=comment_num, answer_id=answer_data.id, record_time=get_time_stamp())
+    new_rank = Rank(value=rank, answer_id=answer_data.id, record_time=get_time_stamp())
     database_requester.add(new_vote_num)
     database_requester.add(new_comment_num)
     database_requester.add(new_rank)
     #
     database_requester.commit()
-    # print(question_id)
-    # print(answer_name)
-    # print(answer_id)
 
 
 # @scheduler.task(trigger='interval', id='update_date', seconds=60)
@@ -37,8 +41,8 @@ def update_data():
     questions = database_requester.get_model_all(Question)
     print("更新问题")
     for question in questions:
-        question_id = question.question_id
-        follower_num, view_num, title = zh_spider.get_follower_view_title(question_id=question_id)
+        question_zhihuid = question.question_zhihuid
+        follower_num, view_num, title = zh_spider.get_follower_view_title(question_zhihuid=question_zhihuid)
         question.current_follower_nums = follower_num
         question.current_view_nums = view_num
 
@@ -51,16 +55,22 @@ def update_data():
     answers = database_requester.get_model_all(Answer)
     print("更新回答")
     for answer in answers:
-        answer_name = answer.title
-        question_id = answer.question_id
-        vote_num, comment_num, rank = zh_spider.get_answer_data(answer_name, question_id)
+        answer_zhihuid = answer.answer_zhihuid
+        question_zhihuid = answer.question_zhihuid
+        vote_num, comment_num, rank, title = zh_spider.get_answer_data(answer_zhihuid, question_zhihuid)
         new_vote_num = VoteNum(value=vote_num, answer_id=answer.id, record_time=get_time_stamp())
         new_comment_num = CommentNum(value=comment_num, answer_id=answer.id, record_time=get_time_stamp())
         new_rank = Rank(value=rank, answer_id=answer.id, record_time=get_time_stamp())
         database_requester.add(new_vote_num)
         database_requester.add(new_comment_num)
         database_requester.add(new_rank)
-
         database_requester.commit()
+
+        answer.current_vote_nums = vote_num
+        answer.current_rank = rank
+        answer.current_comment_nums = comment_num
+        answer.title = title
+        database_requester.commit()
+
     print("回答更新完成")
 # scheduler.add_job(update_data, "cron", hour=3)

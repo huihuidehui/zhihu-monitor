@@ -12,11 +12,11 @@ from app.utils.requestdatabase import DatabaseRequest
 
 
 class BaseResource(Resource):
-    # method_decorators = {'delete': [auth_token.login_required],
-    #                      'post': [auth_token.login_required],
-    #                      'put': [auth_token.login_required],
-    #                      'get': [auth_token.login_required]
-    #                      }  # 加入权限管理
+    method_decorators = {'delete': [auth_token.login_required],
+                         'post': [auth_token.login_required],
+                         'put': [auth_token.login_required],
+                         'get': [auth_token.login_required]
+                         }  # 加入权限管理
 
     def options(self):
         return {'Allow': '*'}, 200, {'Access-Control-Allow-Origin': '*',
