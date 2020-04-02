@@ -56,7 +56,7 @@ class ZhSpider(object):
         """
         # response = requests.get(url, proxies={'http': random.choice(current_app.config['IPS'])}, headers=self.headers)
         response = requests.get(url, headers=self.headers)
-        time.sleep(1)
+        time.sleep(5)
         return response
 
     def get_answer_data(self, answer_zhihuid, question_zhihuid):
