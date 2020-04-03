@@ -75,7 +75,7 @@ export default {
         });
     },
     toAdmin() {
-      this.$router.push("/home");
+      this.$router.push("/");
     }
   }
 };
