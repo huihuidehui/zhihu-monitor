@@ -9,11 +9,9 @@ from flask_migrate import Migrate
 from app.extensions import scheduler
 from app.extensions.flask_bcrypt import bcrypt
 from app.models import db, Question as QuestionModel, Answer as AnswerModel, User as UserModel
-from app.resources import Question, Login, QuestionList, Answer, AnswerList
+from app.resources import Question, Login, QuestionList, Answer, AnswerList, Crawler
 from flask_cors import CORS
-# from app.crawler.crawler_task import update_data
 from app.crawler.crawler_task import update_data
-
 
 def create_app():
     app = Flask(__name__)
@@ -78,6 +76,7 @@ def register_api(app):
     api.add_resource(QuestionList, "/questions")
     api.add_resource(Answer, "/answer")
     api.add_resource(AnswerList, "/answers")
+    api.add_resource(Crawler, "/crawler")
 
 
 def register_commands(app):

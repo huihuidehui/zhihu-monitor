@@ -43,3 +43,4 @@ base_settings = BaseSettings()
 from .question import Question, QuestionList
 from .answer import Answer, AnswerList
 from .login import Login
+from .crawler import Crawler
