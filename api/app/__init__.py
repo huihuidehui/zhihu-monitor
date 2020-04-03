@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # encoding: utf-8
+import datetime
 import time
 
 import click
@@ -12,6 +13,8 @@ from app.models import db, Question as QuestionModel, Answer as AnswerModel, Use
 from app.resources import Question, Login, QuestionList, Answer, AnswerList, Crawler
 from flask_cors import CORS
 from app.crawler.crawler_task import update_data
+import requests
+
 
 def create_app():
     app = Flask(__name__)
@@ -48,12 +51,21 @@ def create_migrate(app):
     migrate = Migrate(app, db)
 
 
+def test():
+    # res = requests.get("http://127.0.0.1:8000")
+    print(1)
+
+
 def create_crawler_task(app):
     # scheduler.add_job(func=update_data, id="update_data", trigger="cron", hour=app.config['HOUR'],
     #                   minute=app.config['MINUTE'])
     # 每隔6小时爬一次
     scheduler.add_job(func=update_data, trigger='interval', id='update_date', seconds=21600)
+    # scheduler.add_job(func=test, trigger='interval', id='test', seconds=10)
 
+    # scheduler.add_job(func=test, id="test", trigger="date",
+    #                   next_run_time=datetime.datetime.now() + datetime.timedelta(seconds=5))
+#
 
 # pass
 
