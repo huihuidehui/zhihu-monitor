@@ -11,6 +11,7 @@
       <app-header></app-header>
       <el-main>
         <icon-card></icon-card>
+        <el-button @click="start_crawler()" style="margin-top:2rem">手动更新全部数据</el-button>
         <question-table></question-table>
         <answer-table></answer-table>
         <!-- <router-view> </router-view> -->
@@ -26,6 +27,7 @@ import Header from "components/content/Header";
 import IconCard from "./childcpn/IconCard";
 import QuestionTable from "./childcpn/QuestionTable";
 import AnswerTable from "./childcpn/AnswerTable";
+import {Request} from "network/request.js"
 export default {
   name: "Home",
   data() {
@@ -37,6 +39,27 @@ export default {
     IconCard,
     QuestionTable,
     AnswerTable
+  },
+  methods: {
+    start_crawler() {
+      Request({
+        url: "/crawler",
+        method: "get"
+      })
+        .then(res => {
+          if (res.res == 1) {
+            this.$message({
+              message: "恭喜你，提交成功",
+              type: "success"
+            });
+          } else {
+            this.$message.error("更新请求提交失败");
+          }
+        })
+        .catch(err => {
+          this.$message.error("更新请求提交失败");
+        });
+    }
   }
 };
 </script>
