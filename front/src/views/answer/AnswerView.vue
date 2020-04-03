@@ -34,19 +34,35 @@ import { formatDate } from "plugins/utils.js";
 export default {
   name: "AnswerView",
   data() {
-     this.extend = {
-        'xAxis.0.axisLabel.rotate': 45
+    //  this.extend = {
+    // 'xAxis.0.axisLabel.rotate': 45
+    // }
+    (this.extend = {
+      "xAxis.0.axisLabel.rotate": 45,
+      series: {
+        label: {
+          normal: {
+            show: true
+          }
+        }
       }
+    }),
+      (this.chartSettings = {
+        // xAxisType: 'time'
+        // min:10000
+        min: ["dataMin", "dataMin"],
+        max: ["dataMax", "dataMax"]
+      });
     return {
       title: "",
-      question:"",
+      question: "",
       chartData: {
-        columns: ["日期", "点赞数","排名","评论数"],
+        columns: ["日期", "点赞数", "排名", "评论数"],
         rows: [
           { 日期: "1/2", 点赞数: 100, 排名: 10, 评论数: 1 },
           { 日期: "1/3", 点赞数: 150, 排名: 9, 评论数: 4 },
           { 日期: "1/4", 点赞数: 180, 排名: 3, 评论数: 10 },
-          { 日期: "1/5", 点赞数: 200, 排名: 1, 评论数: 19 },
+          { 日期: "1/5", 点赞数: 200, 排名: 1, 评论数: 19 }
           // { time: "1/3", value: 100 },
           // { time: "1/4", value: 1000 },
           // { time: "1/5", value: 3000 },
@@ -126,11 +142,19 @@ export default {
           let value = res.data.voteNum[i].value;
           let dateObj = new Date(timeStamp);
           newRows.push({
-            日期: (dateObj.getMonth()+1) + "/" + dateObj.getDate() + "/" +dateObj.getHours() + "/" + dateObj.getMinutes(),
-            点赞数:value,
-            排名:res.data.rank[i].value,
+            日期:
+              dateObj.getMonth() +
+              1 +
+              "/" +
+              dateObj.getDate() +
+              "/" +
+              dateObj.getHours() +
+              "/" +
+              dateObj.getMinutes(),
+            点赞数: value,
+            排名: res.data.rank[i].value,
             评论数: res.data.commentNum[i].value
-          })
+          });
         }
         this.chartData.rows = newRows;
       });

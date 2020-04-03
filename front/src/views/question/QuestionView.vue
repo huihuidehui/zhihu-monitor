@@ -39,11 +39,20 @@ export default {
     // yAxisName: ["数值", "比率"]
     // };
      this.extend = {
-        'xAxis.0.axisLabel.rotate': 45
+        'xAxis.0.axisLabel.rotate': 45,
+        series: {
+          label: {
+            normal: {
+              show: true
+            }
+          }
+        }
       },
        this.chartSettings = {
         // xAxisType: 'time'
         // min:10000
+        min:['dataMin', 'dataMin'],
+        max:['dataMax', 'dataMax']
       }
     return {
       title: "",
