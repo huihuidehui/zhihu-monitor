@@ -109,7 +109,7 @@ export default {
       // }
       // });
       const { href } = this.$router.resolve({
-        path: "showquestion",
+        path: "showanswer",
         query: {
           questionZhiHuId: data.questionZhiHuId,
           answerZhiHuId: data.answerZhiHuId
