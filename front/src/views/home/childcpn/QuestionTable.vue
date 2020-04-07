@@ -71,33 +71,43 @@ export default {
   },
   methods: {
     handleClick(data) {
-      this.$router.push({
+      // this.$router.push({
+      // path: "showquestion",
+      // query: {
+      // questionZhiHuId: data.questionZhiHuId
+      // }
+      // });
+
+      const { href } = this.$router.resolve({
         path: "showquestion",
         query: {
           questionZhiHuId: data.questionZhiHuId
         }
       });
+      window.open(href, "_blank");
     },
-     deleteQuestion(data) {
+    deleteQuestion(data) {
       Request({
         url: "/question",
         method: "delete",
         data: {
-          questionZhiHuId: data.questionZhiHuId,
+          questionZhiHuId: data.questionZhiHuId
         }
-      }).then(res => {
-        if (res.res == 1) {
-          this.$message({
-            message: "恭喜你，提交成功",
-            type: "success"
-          });
-          this.getData();
-        } else {
-          this.$message.error("提交失败，请核对问题id");
-        }
-      }).catch(err=>{
-          this.$message.error("提交失败，请核对问题id");
       })
+        .then(res => {
+          if (res.res == 1) {
+            this.$message({
+              message: "恭喜你，提交成功",
+              type: "success"
+            });
+            this.getData();
+          } else {
+            this.$message.error("提交失败，请核对问题id");
+          }
+        })
+        .catch(err => {
+          this.$message.error("提交失败，请核对问题id");
+        });
     },
     indexMethod(index) {
       return index + 1;

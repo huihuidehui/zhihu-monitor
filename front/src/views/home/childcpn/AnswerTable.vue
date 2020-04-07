@@ -101,13 +101,22 @@ export default {
       //   console.log("tijai");
     },
     handleClick(data) {
-      this.$router.push({
-        path: "showanswer",
+      // this.$router.push({
+      // path: "showanswer",
+      // query: {
+      // questionZhiHuId: data.questionZhiHuId,
+      // answerZhiHuId: data.answerZhiHuId
+      // }
+      // });
+      const { href } = this.$router.resolve({
+        path: "showquestion",
         query: {
           questionZhiHuId: data.questionZhiHuId,
           answerZhiHuId: data.answerZhiHuId
         }
       });
+      window.open(href, "_blank");
+
       // console.log(data.questionId);
     },
     deleteAnswer(data) {
@@ -118,19 +127,21 @@ export default {
           questionZhiId: data.questionZhiHuId,
           answerZhiHuId: data.answerZhiHuId
         }
-      }).then(res => {
-        if (res.res == 1) {
-          this.$message({
-            message: "恭喜你，提交成功",
-            type: "success"
-          });
-          this.getData();
-        } else {
-          this.$message.error("提交失败，请核对回答id、问题id");
-        }
-      }).catch(err=>{
-          this.$message.error("提交失败，请核对回答id、问题id");
       })
+        .then(res => {
+          if (res.res == 1) {
+            this.$message({
+              message: "恭喜你，提交成功",
+              type: "success"
+            });
+            this.getData();
+          } else {
+            this.$message.error("提交失败，请核对回答id、问题id");
+          }
+        })
+        .catch(err => {
+          this.$message.error("提交失败，请核对回答id、问题id");
+        });
     },
     indexMethod(index) {
       return index + 1;
