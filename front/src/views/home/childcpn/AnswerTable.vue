@@ -124,7 +124,7 @@ export default {
         url: "/answer",
         method: "delete",
         data: {
-          questionZhiId: data.questionZhiHuId,
+          questionZhiHuId: data.questionZhiHuId,
           answerZhiHuId: data.answerZhiHuId
         }
       })

@@ -21,3 +21,4 @@ front/yarn-error.log*
 *.pyc
 
 *.db
+/venv
