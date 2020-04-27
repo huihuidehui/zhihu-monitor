@@ -22,3 +22,4 @@ front/yarn-error.log*
 
 *.db
 /venv
+/api/migrations
