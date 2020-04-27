@@ -18,7 +18,8 @@ class DatabaseRequest(object):
         :param question_zhihuid:
         :return:
         """
-        data = Answer.query.filter_by(answer_zhihuid=answer_zhihuid).filter_by(question_zhihuid=question_zhihuid).first()
+        data = Answer.query.filter_by(answer_zhihuid=answer_zhihuid).filter_by(
+            question_zhihuid=question_zhihuid).first()
         return (False, None) if data is None else (True, data)
 
     @staticmethod
@@ -83,6 +84,47 @@ class DatabaseRequest(object):
         :return:
         """
         return model.query.all()
+
+    @staticmethod
+    def get_quepagination_by_increment(page, size, sortord, error_out):
+        """
+        按增长量查询
+        :param page: 页码
+        :param size: 每页的数据
+        :param error_out: 不清楚
+        :return:
+        """
+        if sortord == -1:
+            # 升序
+            data = Question.query.order_by(Question.view_increment).paginate(
+                page=page,
+                per_page=size,
+                error_out=False)  # 从数据库中按时间顺序获取数据
+        elif sortord == 1:
+            # 降序
+            data = Question.query.order_by(Question.view_increment.desc()).paginate(
+                page=page,
+                per_page=size,
+                error_out=False
+            )
+        # self.pagination_data = data
+        return data
+
+    @staticmethod
+    def get_quepagination_by_time(page, size, sortord, error_out=False):
+        if sortord == 1:
+            data = Question.query.order_by(Question.id.desc()).paginate(
+                page=page,
+                per_page=size,
+                error_out=False)  # 从数据库中按时间顺序获取数据
+        # self.pagination_data = data
+        elif sortord == -1:
+            data = Question.query.order_by(Question.id).paginate(
+                page=page,
+                per_page=size,
+                error_out=False
+            )
+        return data
 
     @staticmethod
     def get_pagination(model, page, size, error_out):

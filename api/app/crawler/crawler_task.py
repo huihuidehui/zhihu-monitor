@@ -43,6 +43,9 @@ def update_data():
     for question in questions:
         question_zhihuid = question.question_zhihuid
         follower_num, view_num, title = zh_spider.get_follower_view_title(question_zhihuid=question_zhihuid)
+        # question.view_increment = view_num - question.current_follower_nums
+        question.increase_percentage = (view_num - question.current_view_nums) / question.current_view_nums
+        question.view_increment = view_num - question.current_view_nums
         question.current_follower_nums = follower_num
         question.current_view_nums = view_num
 

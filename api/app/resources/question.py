@@ -18,6 +18,8 @@ class QuestionList(BaseResource):
         # get请求参数
         self.parser.add_argument('page', type=int, location='args')
         self.parser.add_argument('size', type=int, location='args')
+        # 排序方式1：按时间升序排序，-1按时间降序；2按浏览量增长升序排序，-2按浏览量增长降序排序
+        self.parser.add_argument('sortord', type=int, location='args')
         # 用于问题文章响应
         self.fields = deepcopy(base_settings.question_fields)
         self.fields.pop('followerNums')
@@ -25,14 +27,15 @@ class QuestionList(BaseResource):
 
     def get(self):
         response_data = deepcopy(self.base_response_data)
-        page, size = get_values_by_keys(self.parser.parse_args(), [
+        page, size, sortord = get_values_by_keys(self.parser.parse_args(), [
             ('page', current_app.config['DEFAULTPAGE']),
-            ('size', current_app.config['DEFAULTSIZE'])
+            ('size', current_app.config['DEFAULTSIZE']),
+            ('sortord', 1)
         ])
-        response_data = self.make_pagination_data(page, size, response_data)
+        response_data = self.make_pagination_data(page, size, sortord, response_data)
         return response_data, 200
 
-    def make_pagination_data(self, page, size, data):
+    def make_pagination_data(self, page, size, sortord, data):
         """
         查询分页数据.
         :param page: 页数
@@ -40,7 +43,14 @@ class QuestionList(BaseResource):
         :param data: 返回的数据
         :return: data
         """
-        pagination_data = self.requester.get_pagination(QuestionModel, page, size, error_out=False)
+        if sortord == 2:
+            pagination_data = self.requester.get_quepagination_by_increment(page, size, -1, error_out=False)
+        elif sortord == -2:
+            pagination_data = self.requester.get_quepagination_by_increment(page, size, 1, error_out=False)
+        elif sortord == 1:
+            pagination_data = self.requester.get_quepagination_by_time(page, size, -1, error_out=False)
+        elif sortord == -1:
+            pagination_data = self.requester.get_quepagination_by_time(page, size, 1, error_out=False)
         total_pages, questions, total_articles_num = pagination_data.pages, pagination_data.items, pagination_data.total  # 总页数和文章数据
         data['totalPage'] = total_pages
         data['currentPage'] = page
@@ -77,8 +87,12 @@ class Question(BaseResource):
                                                                FollowerNum.record_time <= end_time).all(),
             'viewNums': question_data.view_nums.filter(ViewNum.record_time >= start_time,
                                                        ViewNum.record_time <= end_time).all(),
-            'current_follower_nums':question_data.current_follower_nums,
-            'current_view_nums': question_data.current_view_nums
+            'current_follower_nums': question_data.current_follower_nums,
+            'current_view_nums': question_data.current_view_nums,
+            'view_increment': question_data.view_increment,
+            'increase_percentage': question_data.increase_percentage
+            # 'viewIncrement': fields.Integer(attribute="view_increment"),
+            # 'increasePercentage': fields.Float(attribute="increase_percentage")
         }
 
         if is_success:
@@ -136,6 +150,7 @@ class Question(BaseResource):
         :param view_nums:
         :return:
         """
-        new_question = QuestionModel(question_zhihuid=question_zhihuid, title=title, current_follower_nums=follower_nums,
+        new_question = QuestionModel(question_zhihuid=question_zhihuid, title=title,
+                                     current_follower_nums=follower_nums,
                                      current_view_nums=view_nums)
         return new_question

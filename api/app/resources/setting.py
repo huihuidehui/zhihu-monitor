@@ -29,7 +29,9 @@ class BaseSettings(object):
             'followerNums': fields.Nested(self.follower_nums_fields, attribute="followerNums"),
             'viewNums': fields.Nested(self.view_nums_fields, attribute="viewNums"),
             'currentFollowerNums': fields.Integer(attribute='current_follower_nums'),
-            'currentViewNums': fields.Integer(attribute='current_view_nums')
+            'currentViewNums': fields.Integer(attribute='current_view_nums'),
+            'viewIncrement': fields.Integer(attribute="view_increment"),
+            'increasePercentage': fields.Float(attribute="increase_percentage")
         }
         # 过滤点赞
         self.vote_num_fields = {
