@@ -20,6 +20,10 @@ class Question(db.Model):
     current_follower_nums = db.Column(db.Integer)
     # 当前浏览数
     current_view_nums = db.Column(db.Integer)
+    # 较上次增加浏览数
+    view_increment = db.Column(db.Integer, default=0)
+    # 增长比例
+    increase_percentage = db.Column(db.Float, default=0.0)
 
     # 关注数
     follower_nums = db.relationship("FollowerNum", back_populates='question', lazy="dynamic")
