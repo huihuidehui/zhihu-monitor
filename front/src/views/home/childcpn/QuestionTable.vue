@@ -10,12 +10,14 @@
     </div>
     <div class="question-table">
       <p class="title is-size-5">监控问题</p>
-      <el-table v-loading="loading" :border="true" :data="questionsData" style="width: 100%">
+      <el-table  v-on:sort-change="newSort" v-loading="loading" :border="true" :data="questionsData" style="width: 100%">
         <el-table-column type="index" :index="indexMethod"></el-table-column>
-        <el-table-column prop="questionTitle" label="标题"></el-table-column>
+        <el-table-column prop="questionTitle" sortable="custom" label="标题"></el-table-column>
         <el-table-column prop="questionZhiHuId" label="问题id"></el-table-column>
         <el-table-column prop="currentFollowerNums" label="关注数"></el-table-column>
         <el-table-column prop="currentViewNums" label="浏览数"></el-table-column>
+        <el-table-column prop="viewIncrement" sortable="custom" label="浏览数增加数"></el-table-column>
+        <el-table-column prop="increasePercentage" label="浏览数增加比例"></el-table-column>
 
         <el-table-column label="操作" width="100">
           <template slot-scope="scope">
@@ -57,7 +59,8 @@ export default {
       totalPage: 0,
       totalNum: 0,
       loading: true,
-      pageSize: 10
+      pageSize: 10,
+      sortord:2
     };
   },
   watch: {
@@ -70,6 +73,26 @@ export default {
     this.getData();
   },
   methods: {
+    newSort(a){
+
+      if(a.column.property=="viewIncrement"){
+        if(a.column.order=='ascending'){
+          this.sortord = 2;
+        }
+        else{
+          this.sortord = -2;
+        }
+      }
+      if(a.column.property=="questionTitle"){
+        if(a.column.order=='ascending'){
+          this.sortord = 1;
+        }
+        else{
+          this.sortord = -1;
+        }
+      }
+      this.getData();
+    },
     handleClick(data) {
       // this.$router.push({
       // path: "showquestion",
@@ -122,7 +145,8 @@ export default {
         url: "/questions",
         params: {
           page: this.page,
-          size: this.pageSize
+          size: this.pageSize,
+          sortord:this.sortord
         },
         method: "get"
       })
