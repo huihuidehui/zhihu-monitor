@@ -20,10 +20,15 @@
         <el-table-column type="index" :index="indexMethod"></el-table-column>
         <el-table-column prop="questionTitle" sortable="custom" label="标题"></el-table-column>
         <el-table-column prop="questionZhiHuId" label="问题id"></el-table-column>
-        <el-table-column prop="currentFollowerNums" label="关注数"></el-table-column>
+        <el-table-column prop="currentFollowerNums" sortable="custom" label="关注数"></el-table-column>
         <el-table-column prop="currentViewNums" label="浏览数" sortable="custom"></el-table-column>
         <el-table-column prop="viewIncrement" sortable="custom" label="浏览数增加数"></el-table-column>
-        <el-table-column prop="increasePercentage" :formatter="formatter" label="浏览数增加比例"></el-table-column>
+        <el-table-column
+          prop="increasePercentage"
+          :formatter="formatter"
+          sortable="custom"
+          label="浏览数增加比例"
+        ></el-table-column>
 
         <el-table-column label="操作" width="100">
           <template slot-scope="scope">
@@ -94,17 +99,22 @@ export default {
         case "currentViewNums":
           this.sortord = 3;
           break;
+        case "increasePercentage":
+          this.sortord = 4;
+          break;
+        case "currentFollowerNums":
+          this.sortord = 5;
+          break;
         default:
           this.sortord = 1;
       }
-      if(a.column.order != "ascending"){
+      if (a.column.order != "ascending") {
         this.sortord = -this.sortord;
       }
 
       this.getData();
     },
     handleClick(data) {
-
       const { href } = this.$router.resolve({
         path: "showquestion",
         query: {
