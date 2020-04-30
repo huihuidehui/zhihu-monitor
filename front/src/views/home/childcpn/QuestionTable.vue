@@ -10,14 +10,20 @@
     </div>
     <div class="question-table">
       <p class="title is-size-5">监控问题</p>
-      <el-table  v-on:sort-change="newSort" v-loading="loading" :border="true" :data="questionsData" style="width: 100%">
+      <el-table
+        v-on:sort-change="newSort"
+        v-loading="loading"
+        :border="true"
+        :data="questionsData"
+        style="width: 100%"
+      >
         <el-table-column type="index" :index="indexMethod"></el-table-column>
         <el-table-column prop="questionTitle" sortable="custom" label="标题"></el-table-column>
         <el-table-column prop="questionZhiHuId" label="问题id"></el-table-column>
         <el-table-column prop="currentFollowerNums" label="关注数"></el-table-column>
-        <el-table-column prop="currentViewNums" label="浏览数"></el-table-column>
+        <el-table-column prop="currentViewNums" label="浏览数" sortable="custom"></el-table-column>
         <el-table-column prop="viewIncrement" sortable="custom" label="浏览数增加数"></el-table-column>
-        <el-table-column prop="increasePercentage" label="浏览数增加比例"></el-table-column>
+        <el-table-column prop="increasePercentage" :formatter="formatter" label="浏览数增加比例"></el-table-column>
 
         <el-table-column label="操作" width="100">
           <template slot-scope="scope">
@@ -60,7 +66,7 @@ export default {
       totalNum: 0,
       loading: true,
       pageSize: 10,
-      sortord:2
+      sortord: 2
     };
   },
   watch: {
@@ -73,22 +79,30 @@ export default {
     this.getData();
   },
   methods: {
-    newSort(a){
+    formatter(row, column) {
+      return (row.increasePercentage*100) + "%";
+    },
 
-      if(a.column.property=="viewIncrement"){
-        if(a.column.order=='ascending'){
+    newSort(a) {
+      if (a.column.property == "viewIncrement") {
+        if (a.column.order == "ascending") {
           this.sortord = 2;
-        }
-        else{
+        } else {
           this.sortord = -2;
         }
       }
-      if(a.column.property=="questionTitle"){
-        if(a.column.order=='ascending'){
+      if (a.column.property == "questionTitle") {
+        if (a.column.order == "ascending") {
           this.sortord = 1;
-        }
-        else{
+        } else {
           this.sortord = -1;
+        }
+      }
+       if (a.column.property == "currentViewNums") {
+        if (a.column.order == "ascending") {
+          this.sortord = 3;
+        } else {
+          this.sortord = -3;
         }
       }
       this.getData();
@@ -146,7 +160,7 @@ export default {
         params: {
           page: this.page,
           size: this.pageSize,
-          sortord:this.sortord
+          sortord: this.sortord
         },
         method: "get"
       })

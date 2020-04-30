@@ -86,6 +86,31 @@ class DatabaseRequest(object):
         return model.query.all()
 
     @staticmethod
+    def get_quepagination_by_viewnum(page, size, sortord, error_out):
+        """
+        按增长量查询
+        :param page: 页码
+        :param size: 每页的数据
+        :param error_out: 不清楚
+        :return:
+        """
+        if sortord == -1:
+            # 升序
+            data = Question.query.order_by(Question.current_view_nums).paginate(
+                page=page,
+                per_page=size,
+                error_out=False)  # 从数据库中按时间顺序获取数据
+        elif sortord == 1:
+            # 降序
+            data = Question.query.order_by(Question.current_view_nums.desc()).paginate(
+                page=page,
+                per_page=size,
+                error_out=False
+            )
+        # self.pagination_data = data
+        return data
+
+    @staticmethod
     def get_quepagination_by_increment(page, size, sortord, error_out):
         """
         按增长量查询

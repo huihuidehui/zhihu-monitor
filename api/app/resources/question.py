@@ -19,11 +19,18 @@ class QuestionList(BaseResource):
         self.parser.add_argument('page', type=int, location='args')
         self.parser.add_argument('size', type=int, location='args')
         # 排序方式1：按时间升序排序，-1按时间降序；2按浏览量增长升序排序，-2按浏览量增长降序排序
+        # 3按浏览量升序排序，-3按浏览量降序排序
         self.parser.add_argument('sortord', type=int, location='args')
         # 用于问题文章响应
         self.fields = deepcopy(base_settings.question_fields)
         self.fields.pop('followerNums')
         self.fields.pop('viewNums')
+
+        self.sort_methods = {
+            1: self.requester.get_quepagination_by_time,
+            2: self.requester.get_quepagination_by_increment,
+            3: self.requester.get_quepagination_by_viewnum
+        }
 
     def get(self):
         response_data = deepcopy(self.base_response_data)
@@ -43,14 +50,7 @@ class QuestionList(BaseResource):
         :param data: 返回的数据
         :return: data
         """
-        if sortord == 2:
-            pagination_data = self.requester.get_quepagination_by_increment(page, size, -1, error_out=False)
-        elif sortord == -2:
-            pagination_data = self.requester.get_quepagination_by_increment(page, size, 1, error_out=False)
-        elif sortord == 1:
-            pagination_data = self.requester.get_quepagination_by_time(page, size, -1, error_out=False)
-        elif sortord == -1:
-            pagination_data = self.requester.get_quepagination_by_time(page, size, 1, error_out=False)
+        pagination_data = self.sort_methods[abs(sortord)](page, size, -sortord // abs(sortord), error_out=False)
         total_pages, questions, total_articles_num = pagination_data.pages, pagination_data.items, pagination_data.total  # 总页数和文章数据
         data['totalPage'] = total_pages
         data['currentPage'] = page
