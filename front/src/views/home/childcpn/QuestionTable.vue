@@ -80,40 +80,30 @@ export default {
   },
   methods: {
     formatter(row, column) {
-      return (row.increasePercentage*100) + "%";
+      return row.increasePercentage * 100 + "%";
     },
 
     newSort(a) {
-      if (a.column.property == "viewIncrement") {
-        if (a.column.order == "ascending") {
+      switch (a.column.property) {
+        case "viewIncrement":
           this.sortord = 2;
-        } else {
-          this.sortord = -2;
-        }
-      }
-      if (a.column.property == "questionTitle") {
-        if (a.column.order == "ascending") {
+          break;
+        case "questionTitle":
           this.sortord = 1;
-        } else {
-          this.sortord = -1;
-        }
-      }
-       if (a.column.property == "currentViewNums") {
-        if (a.column.order == "ascending") {
+          break;
+        case "currentViewNums":
           this.sortord = 3;
-        } else {
-          this.sortord = -3;
-        }
+          break;
+        default:
+          this.sortord = 1;
       }
+      if(a.column.order != "ascending"){
+        this.sortord = -this.sortord;
+      }
+
       this.getData();
     },
     handleClick(data) {
-      // this.$router.push({
-      // path: "showquestion",
-      // query: {
-      // questionZhiHuId: data.questionZhiHuId
-      // }
-      // });
 
       const { href } = this.$router.resolve({
         path: "showquestion",

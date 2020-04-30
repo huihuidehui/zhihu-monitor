@@ -21,6 +21,7 @@ class QuestionList(BaseResource):
         # 排序方式1：按时间升序排序，-1按时间降序；2按浏览量增长升序排序，-2按浏览量增长降序排序
         # 3按浏览量升序排序，-3按浏览量降序排序
         self.parser.add_argument('sortord', type=int, location='args')
+        # self.parser.add_argument('')
         # 用于问题文章响应
         self.fields = deepcopy(base_settings.question_fields)
         self.fields.pop('followerNums')
