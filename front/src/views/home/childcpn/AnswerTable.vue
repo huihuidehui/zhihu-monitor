@@ -9,16 +9,17 @@
     </div>
     <div class="question-table">
       <p class="title is-size-5">监控回答</p>
-      <el-table v-loading="loading" :border="true" :data="answersData" style="width: 100%">
+      <el-table v-loading="loading" :border="true" :data="answersData" style="width: 100%"
+      v-on:sort-change="newSort">
         <el-table-column type="index" :index="indexMethod"></el-table-column>
-        <el-table-column prop="title" label="答主"></el-table-column>
+        <el-table-column prop="title" sortable="custom" label="答主" ></el-table-column>
         <!-- <el-table-column prop="questionId" label="问题id"></el-table-column> -->
         <el-table-column prop="question" label="问题"></el-table-column>
         <el-table-column prop="questionZhiHuId" label="问题Id"></el-table-column>
 
-        <el-table-column prop="rank" label="排名"></el-table-column>
-        <el-table-column prop="voteNums" label="点赞数"></el-table-column>
-        <el-table-column prop="commentNums" label="评论数"></el-table-column>
+        <el-table-column prop="rank" sortable="custom" label="排名"></el-table-column>
+        <el-table-column prop="voteNums" sortable="custom" label="点赞数"></el-table-column>
+        <el-table-column prop="commentNums" sortable="custom" label="评论数"></el-table-column>
         <el-table-column prop="answerZhiHuId" label="回答Id"></el-table-column>
 
         <el-table-column label="操作" width="100">
@@ -59,7 +60,8 @@ export default {
       totalPage: 0,
       totalNum: 0,
       loading: true,
-      pageSize: 10
+      pageSize: 10,
+      sortord:1
     };
   },
   watch: {
@@ -72,6 +74,32 @@ export default {
     this.getData();
   },
   methods: {
+    newSort(a) {
+      switch (a.column.property) {
+        case "title":
+          this.sortord = 1;
+          break;
+        case "voteNums":
+          this.sortord = 2;
+          break;
+        case "commentNums":
+          this.sortord = 3;
+          break;
+        case "rank":
+          this.sortord = 4;
+          break;
+        // case "currentFollowerNums":
+          // this.sortord = 5;
+          // break;
+        default:
+          this.sortord = 1;
+      }
+      if (a.column.order != "ascending") {
+        this.sortord = -this.sortord;
+      }
+
+      this.getData();
+    },
     addNewAnswer() {
       Request({
         url: "/answer",
@@ -156,7 +184,8 @@ export default {
         url: "/answers",
         params: {
           page: this.page,
-          size: this.pageSize
+          size: this.pageSize,
+          sortord: this.sortord
         },
         method: "get"
       })

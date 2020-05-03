@@ -22,25 +22,41 @@ class AnswerList(BaseResource):
         self.parser.add_argument('page', type=int, location='args')
         self.parser.add_argument('size', type=int, location='args')
         self.fields = deepcopy(base_settings.answers_fields)
+        # 排序方式1：按时间升序排序，-1按时间降序；2按点赞增长升序排序，-2按点赞增长降序排序
+        # 3按评论升序排序，-3按评论量降序排序,4按排名百分比排序,5按排名排序
+        self.parser.add_argument('sortord', type=int, location='args')
+        self.sort_methods = {
+            1: AnswerModel.id,
+            2: AnswerModel.current_vote_nums,
+            3: AnswerModel.current_comment_nums,
+            4: AnswerModel.current_rank
+            # 2: AnswerModel.view_increment,
+            # 3: AnswerModel.current_view_nums,
+            # 4: AnswerModel.increase_percentage,
+            # 5: AnswerModel.current_follower_nums
+        }
 
     def get(self):
         response_data = deepcopy(self.base_response_data)
-        page, size = get_values_by_keys(self.parser.parse_args(), [
+        page, size, sortord = get_values_by_keys(self.parser.parse_args(), [
             ('page', current_app.config['DEFAULTPAGE']),
-            ('size', current_app.config['DEFAULTSIZE'])
+            ('size', current_app.config['DEFAULTSIZE']),
+            ('sortord', 1)
         ])
-        response_data = self.make_pagination_data(page, size, response_data)
+        response_data = self.make_pagination_data(page, size, sortord, response_data)
         return response_data, 200
 
-    def make_pagination_data(self, page, size, data):
+    def make_pagination_data(self, page, size, sortord, data):
         """
-        查询分页数据.
-        :param page: 页数
-        :param size: 每页的个数
-        :param data: 返回的数据
-        :return: data
+        查询分页数据
+        :param page:
+        :param size:
+        :param sortord:
+        :param data:
+        :return:
         """
-        pagination_data = self.requester.get_pagination(AnswerModel, page, size, error_out=False)
+        pagination_data = self.requester.get_anspagination_by_column(page, size, -sortord // abs(sortord),
+                                                                     self.sort_methods[abs(sortord)], error_out=False)
         total_pages, answers, total_articles_num = pagination_data.pages, pagination_data.items, pagination_data.total  # 总页数和文章数据
         data['totalPage'] = total_pages
         data['currentPage'] = page

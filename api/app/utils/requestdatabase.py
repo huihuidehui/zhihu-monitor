@@ -85,6 +85,32 @@ class DatabaseRequest(object):
         """
         return model.query.all()
 
+
+    @staticmethod
+    def get_anspagination_by_column(page, size, sortord, column, error_out=False):
+        """
+        按给定字段给answer排序
+        :param page:
+        :param size:
+        :param sortord:
+        :param column:
+        :param error_out:
+        :return:
+        """
+        if sortord == 1:
+            data = Answer.query.order_by(column.desc()).paginate(
+                page=page,
+                per_page=size,
+                error_out=False)  # 从数据库中按时间顺序获取数据
+        # self.pagination_data = data
+        elif sortord == -1:
+            data = Answer.query.order_by(column).paginate(
+                page=page,
+                per_page=size,
+                error_out=False
+            )
+        return data
+
     @staticmethod
     def get_quepagination_by_column(page, size, sortord, column, error_out=False):
         """
