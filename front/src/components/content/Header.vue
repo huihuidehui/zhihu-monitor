@@ -5,15 +5,27 @@
       注销
     </a>
     <!-- <el-button>退出</el-button> -->
-    <span>欢迎使用后台管理后台</span>
+    <span>欢迎{{username}}使用知乎监控系统</span>
   </el-header>
 </template>
 
 <script>
+import store from "store/index.js";
 export default {
   name: "Header",
   data() {
-    return {};
+    return {
+      username: ""
+    };
+  },
+  // computed:{
+    // username(){
+      // return store.state.username;
+    // }
+  // },
+  created(){
+    this.username = store.state.username;
+    // console.log(this.username)
   },
   methods: {
     logout() {

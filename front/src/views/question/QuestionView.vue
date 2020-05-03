@@ -59,10 +59,10 @@ export default {
       chartData: {
         columns: ["日期", "关注数","浏览数"],
         rows: [
-          { 日期: "1/2", 关注数: 100, 浏览数: 10 },
-          { 日期: "1/3", 关注数: 200, 浏览数: 20 },
-          { 日期: "1/4", 关注数: 300, 浏览数: 100 },
-          { 日期: "1/5", 关注数: 400, 浏览数: 200 },
+          // { 日期: "1/2", 关注数: 100, 浏览数: 10 },
+          // { 日期: "1/3", 关注数: 200, 浏览数: 20 },
+          // { 日期: "1/4", 关注数: 300, 浏览数: 100 },
+          // { 日期: "1/5", 关注数: 400, 浏览数: 200 },
           // { time: "1/3", value: 100 },
           // { time: "1/4", value: 1000 },
           // { time: "1/5", value: 3000 },
@@ -132,6 +132,7 @@ export default {
           endTime: this.endTime
         }
       }).then(res => {
+        if(res['res']==1){
         this.title = res.data.questionTitle;
         // this.chartData.rows = res.data.followerNums;
         // 处理数据
@@ -150,7 +151,11 @@ export default {
           })
         }
         this.chartData.rows = newRows;
-        console.log(res);
+        // console.log(res);
+        }
+        else{
+          this.$router.push({ path: '/' })
+        }
       });
     }
   }

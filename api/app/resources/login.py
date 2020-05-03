@@ -2,6 +2,8 @@
 # encoding: utf-8
 from copy import deepcopy
 
+from flask import g
+
 from app.extensions.flask_httpauth import auth_basic
 from . import BaseResource
 
@@ -19,4 +21,5 @@ class Login(BaseResource):
         """
         response_data = deepcopy(self.base_response_data)
         response_data['token'] = self.requester.get_token()
+        response_data['username'] = g.user.name
         return response_data, 200

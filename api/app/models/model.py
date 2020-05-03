@@ -34,6 +34,11 @@ class Question(db.Model):
     # 总回答数
     answers_total = db.Column(db.Integer)
 
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    # 所属用户
+    # user = db.relationship('User', back_populates='questions')
+
 
 class ViewNum(db.Model):
     # 多
@@ -87,6 +92,7 @@ class Answer(db.Model):
 
     question_id = db.Column(db.Integer, db.ForeignKey('question.id'))
     question = db.relationship('Question', back_populates='answers')
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     @property
     def vote_nums_list(self):
@@ -162,6 +168,11 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30), unique=True)
     password_hash = db.Column(db.String(128))
+    questions = db.relationship('Question')
+    answers = db.relationship('Answer')
+    # questions = db.relationship("User", back_populates="question", lazy='dynamic')
+    # questions = db.relationship('Question', back_populates='user', lazy="dynamic")
+    # question = db.relationship('Question', back_populates='user_id')
 
     @staticmethod
     @auth_basic.verify_password
@@ -223,4 +234,5 @@ class User(db.Model):
         except:
             return False
         user = User.query.get(data['id'])
+        g.user = user
         return True if user is not None else False

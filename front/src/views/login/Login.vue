@@ -64,8 +64,11 @@ export default {
         .then(res => {
           this.isErr = false;
           const newToken = res["token"];
+          const newName = res['username'];
           window.localStorage.setItem("token", res["token"]);
+          window.localStorage.setItem('username', res["username"])
           this.$store.commit("changeToken", newToken);
+          this.$store.commit("changeUsername", newName);
           // 跳转到admin管理页面
           this.toAdmin();
         })

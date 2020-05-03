@@ -18,7 +18,7 @@ class DatabaseRequest(object):
         :param question_zhihuid:
         :return:
         """
-        data = Answer.query.filter_by(answer_zhihuid=answer_zhihuid).filter_by(
+        data = Answer.query.filter_by(user_id=g.user.id).filter_by(answer_zhihuid=answer_zhihuid).filter_by(
             question_zhihuid=question_zhihuid).first()
         return (False, None) if data is None else (True, data)
 
@@ -85,7 +85,6 @@ class DatabaseRequest(object):
         """
         return model.query.all()
 
-
     @staticmethod
     def get_anspagination_by_column(page, size, sortord, column, error_out=False):
         """
@@ -98,13 +97,14 @@ class DatabaseRequest(object):
         :return:
         """
         if sortord == 1:
-            data = Answer.query.order_by(column.desc()).paginate(
+            data = Answer.query.filter_by(user_id=g.user.id).order_by(column.desc()).paginate(
                 page=page,
                 per_page=size,
                 error_out=False)  # 从数据库中按时间顺序获取数据
         # self.pagination_data = data
         elif sortord == -1:
-            data = Answer.query.order_by(column).paginate(
+            # data = Answer.query.order_by(column).paginate(
+            data = Answer.query.filter_by(user_id=g.user.id).order_by(column).paginate(
                 page=page,
                 per_page=size,
                 error_out=False
@@ -123,13 +123,14 @@ class DatabaseRequest(object):
         :return:
         """
         if sortord == 1:
-            data = Question.query.order_by(column.desc()).paginate(
+            # data = Question.query.order_by(column.desc()).paginate(
+            data = Question.query.filter_by(user_id=g.user.id).order_by(column.desc()).paginate(
                 page=page,
                 per_page=size,
                 error_out=False)  # 从数据库中按时间顺序获取数据
         # self.pagination_data = data
         elif sortord == -1:
-            data = Question.query.order_by(column).paginate(
+            data = Question.query.filter_by(user_id=g.user.id).order_by(column).paginate(
                 page=page,
                 per_page=size,
                 error_out=False
@@ -211,5 +212,5 @@ class DatabaseRequest(object):
         :param question_zhihuid:
         :return:
         """
-        data = Question.query.filter_by(question_zhihuid=question_zhihuid).first()
+        data = Question.query.filter_by(user_id=g.user.id).filter_by(question_zhihuid=question_zhihuid).first()
         return (False, None) if data is None else (True, data)

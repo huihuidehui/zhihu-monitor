@@ -98,6 +98,15 @@ def register_commands(app):
         db.create_all(app=app)
         click.echo('Reset database, successful.')
 
+    @app.cli.command(help="add new user")
+    @click.option('-u', prompt=True, help='username')
+    @click.option('-p', prompt=True, hide_input=True, confirmation_prompt=True, help='password')
+    def adduser(u, p):
+        new_user = UserModel(name=u, password_hash=UserModel.set_password(p))
+        db.session.add(new_user)
+        db.session.commit()
+        click.echo("Successful!")
+
     @app.cli.command(help='''Initialize the blog Use \'--help\' for more information.''')
     @click.option('-u', prompt=True, help='username')
     @click.option('-p', prompt=True, hide_input=True, confirmation_prompt=True, help='password')

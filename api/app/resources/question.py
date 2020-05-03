@@ -2,7 +2,7 @@
 # encoding: utf-8
 
 from copy import deepcopy
-from flask import current_app
+from flask import current_app, g
 from flask_restful import reqparse, marshal
 from app.models import Question as QuestionModel, FollowerNum, ViewNum
 from app.resources import BaseResource, base_settings
@@ -43,6 +43,7 @@ class QuestionList(BaseResource):
             ('sortord', 1)
         ])
         response_data = self.make_pagination_data(page, size, sortord, response_data)
+        # response_data['user'] = g.user.id
         return response_data, 200
 
     def make_pagination_data(self, page, size, sortord, data):
@@ -84,24 +85,28 @@ class Question(BaseResource):
 
         is_success, question_data = self.requester.get_question_by_zhihuid(question_zhihuid)
 
-        new_data = {
-            'question_zhihuid': question_data.question_zhihuid,
-            'title': question_data.title,
-            'followerNums': question_data.follower_nums.filter(FollowerNum.record_time >= start_time,
-                                                               FollowerNum.record_time <= end_time).all(),
-            'viewNums': question_data.view_nums.filter(ViewNum.record_time >= start_time,
-                                                       ViewNum.record_time <= end_time).all(),
-            'current_follower_nums': question_data.current_follower_nums,
-            'current_view_nums': question_data.current_view_nums,
-            'view_increment': question_data.view_increment,
-            'increase_percentage': question_data.increase_percentage
-            # 'viewIncrement': fields.Integer(attribute="view_increment"),
-            # 'increasePercentage': fields.Float(attribute="increase_percentage")
-        }
 
         if is_success:
+            new_data = {
+                'question_zhihuid': question_data.question_zhihuid,
+                'title': question_data.title,
+                'followerNums': question_data.follower_nums.filter(FollowerNum.record_time >= start_time,
+                                                                   FollowerNum.record_time <= end_time).all(),
+                'viewNums': question_data.view_nums.filter(ViewNum.record_time >= start_time,
+                                                           ViewNum.record_time <= end_time).all(),
+                'current_follower_nums': question_data.current_follower_nums,
+                'current_view_nums': question_data.current_view_nums,
+                'view_increment': question_data.view_increment,
+                'increase_percentage': question_data.increase_percentage
+                # 'viewIncrement': fields.Integer(attribute="view_increment"),
+                # 'increasePercentage': fields.Float(attribute="increase_percentage")
+            }
             response_data['data'] = marshal(new_data, fields=self.fields)
-        return response_data
+            return response_data
+        else:
+            response_data['res'] = 0;
+            response_data['message'] = 'error'
+            return response_data
         # return [endtime,starttime]
 
     def put(self):
@@ -156,5 +161,5 @@ class Question(BaseResource):
         """
         new_question = QuestionModel(question_zhihuid=question_zhihuid, title=title,
                                      current_follower_nums=follower_nums,
-                                     current_view_nums=view_nums)
+                                     current_view_nums=view_nums, user_id=g.user.id)
         return new_question

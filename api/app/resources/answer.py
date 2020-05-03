@@ -5,7 +5,7 @@ from copy import deepcopy
 
 from app.crawler.crawler_task import add_new_answer_crawler
 from app.extensions import scheduler
-from flask import current_app
+from flask import current_app, g
 from flask_restful import reqparse, marshal
 from app.models import Answer as AnswerModel, VoteNum as VoteNumModel, CommentNum as CommentNumModel, Rank as RankModel
 from app.resources import BaseResource, base_settings
@@ -118,7 +118,7 @@ class Answer(BaseResource):
             question_id = question_data.id
             is_success = self.add_new_answer(answer_zhihuid=answer_zhihuid, question_zhihuid=question_zhihuid,
                                              question_id=question_id,
-                                             question_title=question_data.title)
+                                             question_title=question_data.title, user_id=g.user.id)
             # 回答在数据库的数据
             _, answer_data = self.requester.get_answer_by_zhihuid(answer_zhihuid, question_zhihuid)
             # answer_id为数据库的id
@@ -146,7 +146,7 @@ class Answer(BaseResource):
             response_data['message'] = "error"
         return response_data
 
-    def add_new_answer(self, answer_zhihuid, question_zhihuid, question_id, question_title):
+    def add_new_answer(self, answer_zhihuid, question_zhihuid, question_id, question_title,user_id):
         """
 
         :param answer_zhihuid:
@@ -157,7 +157,7 @@ class Answer(BaseResource):
         """
         try:
             new_answer = AnswerModel(answer_zhihuid=answer_zhihuid, question_zhihuid=question_zhihuid,
-                                     question_id=question_id, question_title=question_title)
+                                     question_id=question_id, question_title=question_title,user_id=user_id)
             self.requester.add(new_answer)
             self.requester.commit()
             return True
