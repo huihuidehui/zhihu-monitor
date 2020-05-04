@@ -4,7 +4,9 @@
   <div>
     <div style="margin-top:2rem">
       <p class="is-size-6">添加监控的问题</p>
-      <el-input v-model="questionZhiHuId" placeholder="输入问题id"></el-input>
+      <!-- <el-input v-model="questionZhiHuId" placeholder="输入问题id"></el-input> -->
+      <el-input v-model="questionUrl" placeholder="输入问题url"></el-input>
+
       <!-- <el-input v-model="answerName" placeholder="输入作者的知乎昵称"></el-input> -->
       <el-button type="primary" size="mini" round v-on:click="addNewQuestion">提交</el-button>
     </div>
@@ -63,7 +65,8 @@ export default {
   name: "QuestionTable",
   data() {
     return {
-      questionZhiHuId: "",
+      // questionZhiHuId: "",
+      questionUrl:"",
       questionsData: [],
       page: 1,
       currentPage: 1,
@@ -185,14 +188,16 @@ export default {
         url: "/question",
         method: "put",
         data: {
-          questionZhiHuId: this.questionZhiHuId
+          // questionZhiHuId: this.questionZhiHuId
+          questionUrl:this.questionUrl
           // answerName: this.answerName
         }
       })
         .then(res => {
           if (res.res == 1) {
             this.getData();
-            this.questionZhiHuId = "";
+            // this.questionZhiHuId = "";
+            this.questionUrl ="";
             this.$message({
               message: "恭喜你，提交成功",
               type: "success"

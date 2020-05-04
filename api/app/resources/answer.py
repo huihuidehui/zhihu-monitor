@@ -10,7 +10,7 @@ from flask_restful import reqparse, marshal
 from app.models import Answer as AnswerModel, VoteNum as VoteNumModel, CommentNum as CommentNumModel, Rank as RankModel
 from app.resources import BaseResource, base_settings
 from app.utils.util import get_values_by_keys, get_time_stamp
-
+import re
 
 class AnswerList(BaseResource):
     def __init__(self):
@@ -71,12 +71,17 @@ class Answer(BaseResource):
         super(Answer, self).__init__()
         self.parser.add_argument('answerZhiHuId', type=int)
         self.parser.add_argument('questionZhiHuId', type=int)
+        self.parser.add_argument('answerUrl', type=str)
         self.parser.add_argument('startTime', type=int, default=0)  # 开始时间
         self.parser.add_argument('endTime', type=int, default=get_time_stamp())
         self.fields = base_settings.answer_fields
 
     def get(self):
         response_data = deepcopy(self.base_response_data)
+        # answer_url = self.parser.parse_args().get('answerUrl')
+        # try:
+        # question_zhihuid, answer_zhihuid = re.findall(r".*question/(.*)/answer/(.*)", answer_url)[0]
+        # question_zhihuid, answer_zhihuid = int(question_zhihuid), int(answer_zhihuid)
         answer_zhihuid = self.parser.parse_args().get('answerZhiHuId')
         question_zhihuid = self.parser.parse_args().get('questionZhiHuId')
 
@@ -109,9 +114,12 @@ class Answer(BaseResource):
 
     def put(self):
         response_data = deepcopy(self.base_response_data)
-        answer_zhihuid = self.parser.parse_args().get('answerZhiHuId')
+        # answer_zhihuid = self.parser.parse_args().get('answerZhiHuId')
         # 问题id
-        question_zhihuid = self.parser.parse_args().get('questionZhiHuId')
+        # question_zhihuid = self.parser.parse_args().get('questionZhiHuId')
+        answer_url = self.parser.parse_args().get('answerUrl')
+        question_zhihuid, answer_zhihuid = re.findall(r".*question/(.*)/answer/(.*)", answer_url)[0]
+        question_zhihuid, answer_zhihuid = int(question_zhihuid), int(answer_zhihuid)
         is_success, question_data = self.requester.get_question_by_zhihuid(question_zhihuid)
         if is_success:
             # 数据库中的id

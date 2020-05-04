@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # encoding: utf-8
-
+import re
 from copy import deepcopy
 from flask import current_app, g
 from flask_restful import reqparse, marshal
@@ -72,6 +72,7 @@ class Question(BaseResource):
         super(Question, self).__init__()
         # 请求添加问题的id
         self.parser.add_argument('questionZhiHuId', type=int)
+        self.parser.add_argument("questionUrl", type=str)
         self.parser.add_argument('startTime', type=int, default=0)  # 开始时间
         self.parser.add_argument('endTime', type=int, default=get_time_stamp())  # 截至时间
         self.fields = base_settings.question_fields
@@ -111,7 +112,9 @@ class Question(BaseResource):
 
     def put(self):
         response_data = deepcopy(self.base_response_data)
-        question_zhihuid = self.parser.parse_args().get("questionZhiHuId")
+        question_zhihuid = re.findall(r"question/(\d*)", self.parser.parse_args().get('questionUrl'))[0]
+        question_zhihuid = int(question_zhihuid)
+        # question_zhihuid = self.parser.parse_args().get("questionZhiHuId")
         # 获取当前时间该的问题关注数和浏览数和标题
         follower_nums, view_nums, title = self.crawler.get_follower_view_title(question_zhihuid)
 

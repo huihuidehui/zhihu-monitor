@@ -3,8 +3,9 @@
   <div>
     <div>
       <p class="is-size-6">添加监控的回答</p>
-      <el-input v-model="questionZhiHuId" placeholder="输入回答所在问题id"></el-input>
-      <el-input v-model="answerZhiHuId" placeholder="输入回答id"></el-input>
+      <!-- <el-input v-model="questionZhiHuId" placeholder="输入回答所在问题id"></el-input> -->
+      <!-- <el-input v-model="answerZhiHuId" placeholder="输入回答id"></el-input> -->
+      <el-input v-model="answerUrl" placeholder="输入回答url"></el-input>
       <el-button type="primary" size="mini" round v-on:click="addNewAnswer">提交</el-button>
     </div>
     <div class="question-table">
@@ -52,8 +53,9 @@ export default {
   name: "AnswerTable",
   data() {
     return {
-      questionZhiHuId: "",
-      answerZhiHuId: "",
+      // questionZhiHuId: "",
+      // answerZhiHuId: "",
+      answerUrl:"",
       answersData: [],
       page: 1,
       currentPage: 1,
@@ -105,15 +107,17 @@ export default {
         url: "/answer",
         method: "put",
         data: {
-          questionZhiHuId: this.questionZhiHuId,
-          answerZhiHuId: this.answerZhiHuId
+          // questionZhiHuId: this.questionZhiHuId,
+          // answerZhiHuId: this.answerZhiHuId
+          answerUrl: this.answerUrl
         }
       })
         .then(res => {
           if (res.res == 1) {
             this.getData();
-            this.questionZhiHuId = "";
-            this.answerZhiHuId = "";
+            // this.questionZhiHuId = "";
+            // this.answerZhiHuId = "";
+            this.answerUrl = "";
             this.$message({
               message: "恭喜你，提交成功",
               type: "success"
