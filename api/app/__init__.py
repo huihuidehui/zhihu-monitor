@@ -51,23 +51,19 @@ def create_migrate(app):
     migrate = Migrate(app, db)
 
 
-def test():
-    # res = requests.get("http://127.0.0.1:8000")
-    print(1)
 
 
 def create_crawler_task(app):
-    # scheduler.add_job(func=update_data, id="update_data", trigger="cron", hour=app.config['HOUR'],
-    #                   minute=app.config['MINUTE'])
+    # 定时抓取数据
+    scheduler.add_job(func=update_data, id="update_data", trigger="cron", hour=app.config['HOUR'],
+                      minute=app.config['MINUTE'])
     # 每隔12小时爬一次
-    scheduler.add_job(func=update_data, trigger='interval', id='update_date', seconds=43200)
+    # scheduler.add_job(func=update_data, trigger='interval', id='update_date', seconds=43200)
     # scheduler.add_job(func=test, trigger='interval', id='test', seconds=10)
 
     # scheduler.add_job(func=test, id="test", trigger="date",
     #                   next_run_time=datetime.datetime.now() + datetime.timedelta(seconds=5))
-#
 
-# pass
 
 
 def register_extensions(app):

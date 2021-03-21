@@ -22,7 +22,7 @@ module.exports = {
       "v-charts": "VeIndex"
       // "v-charts": "VeIndex"
     }
-  }
+  },
 
   // chainWebpack: config => {
   // .plugin('webpack-bundle-analyzer')
@@ -32,5 +32,5 @@ module.exports = {
   // config.optimization.minimize(true)
   // },
 
-  // lintOnSave: false
+  lintOnSave: false
 };

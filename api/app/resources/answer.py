@@ -30,10 +30,6 @@ class AnswerList(BaseResource):
             2: AnswerModel.current_vote_nums,
             3: AnswerModel.current_comment_nums,
             4: AnswerModel.current_rank
-            # 2: AnswerModel.view_increment,
-            # 3: AnswerModel.current_view_nums,
-            # 4: AnswerModel.increase_percentage,
-            # 5: AnswerModel.current_follower_nums
         }
 
     def get(self):
