@@ -36,7 +36,7 @@ pickleshare==0.7.5
 prompt-toolkit==3.0.5
 ptyprocess==0.6.0
 pycparser==2.20
-Pygments==2.6.1
+Pygments==2.7.4
 PyMySQL==0.9.3
 python-dateutil==2.8.1
 python-editor==1.0.4
