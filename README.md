@@ -45,9 +45,3 @@
 
 前端使用`vue.js + bulma`完成，网络请求使用HTTP库`axios`完成。
 
-#### 线上Demo
-
-* 账号：test
-* 密码：123456
-
-[体验地址](http://www.zh.huihuidehui.com/)
