@@ -20,15 +20,14 @@ module.exports = {
       axios: "axios",
       "element-ui": "ElEMENT",
       "v-charts": "VeIndex"
-      // "v-charts": "VeIndex"
     }
   },
 
   // chainWebpack: config => {
   // .plugin('webpack-bundle-analyzer')
   // .use(require('webpack-bundle-analyzer').BundleAnalyzerPlugin)
-  //
-  // 压缩代码
+  
+  // //压缩代码
   // config.optimization.minimize(true)
   // },
 
